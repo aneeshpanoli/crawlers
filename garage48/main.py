@@ -3,7 +3,7 @@ import requests as rq
 from garage48 import country, tools
 import json
 
-url = "http://garage48.org/hackthecrisis/?fbclid=IwAR2B8USw8Vf99Nemf3kqDA1PG8gDzRYqUXQb_gmkiwPERJgvhzrSGCIgiwQ"
+url = "http://garage48.org/hackthecrisis/"
 
 res = rq.get(url)
 soup = BS(res.content, 'lxml')
