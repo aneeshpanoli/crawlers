@@ -18,11 +18,10 @@ def parse_event(e):
     img = e.find('div', {"class": "gr-event__image"})
     c = infolist[1].find('strong').text
     country_id = country.match_country_id(c)
-    img_url = ''
 
-    if img:
-        img_url = tools.parse_bg_image(img['data-bg'])
-        # det_url = img.find('a')['href']
+    #comments
+    img_url = tools.parse_bg_image(img['data-bg']) if img else ''
+    # det_url = img.find('a')['href']
 
     data = {
         "name": title,
@@ -33,13 +32,7 @@ def parse_event(e):
     return data
 
 
-l = []
-for event in events:
-    e = parse_event(event)
-    l.append(e)
-
+l = [parse_event(event) for event in events]
 target = json.dumps(l)
-
-f = open('output/group_list.json', 'w')
-f.write(target)
-f.close()
+with open('output/group_list.json', 'w') as f:
+    f.write(target)
