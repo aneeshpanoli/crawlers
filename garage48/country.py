@@ -1,8 +1,12 @@
 import json
 from fuzzywuzzy import fuzz
+from pathlib import Path
+import os
 
+data_folder = Path(Path(__file__).resolve().parent, "references")
+file_to_open = data_folder / "country.json"
 
-text = open('references/country.json', 'r').read()
+text = open(file_to_open, 'r').read()
 countries = json.loads(text)['RECORDS']
 
 
