@@ -1,0 +1,8 @@
+- [ ] Organize the code.
+- [ ] Prettify the code.
+- [ ] Pay the tech debt.
+- [ ] Create modules and classed.
+- [ ] Try catch, make it more robust.
+- [ ] Create Shared Libraries make the code reusable.
+- [ ] Use SQLite db to store the data.
+- [ ] 

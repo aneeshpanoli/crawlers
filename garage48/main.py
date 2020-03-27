@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup as BS
 import requests as rq
 import json
+import lxml
 
 import country
 import tools
@@ -11,17 +12,18 @@ res = rq.get(url)
 soup = BS(res.content, 'lxml')
 events = soup.findAll('div', {"class": "gr-event"})
 
-
 def parse_event(e):
     infolist = e.findAll('div', 'gr-flex')
     title = str.strip(e.find('h4', {"class": "gr-event__title"}).text)
     img = e.find('div', {"class": "gr-event__image"})
     c = infolist[1].find('strong').text
-    img_url = tools.parse_bg_image(img['data-bg'])
-
-    # det_url = img.find('a')['href']
-
     country_id = country.match_country_id(c)
+    img_url = ''
+
+    if img:
+        img_url = tools.parse_bg_image(img['data-bg'])
+        # det_url = img.find('a')['href']
+
     data = {
         "name": title,
         "logo_url": img_url,
