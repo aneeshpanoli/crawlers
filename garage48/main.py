@@ -19,7 +19,7 @@ def parse_event(e):
     c = infolist[1].find('strong').text
     country_id = country.match_country_id(c)
 
-    
+    #comments
     img_url = tools.parse_bg_image(img['data-bg']) if img else ''
     # det_url = img.find('a')['href']
 
