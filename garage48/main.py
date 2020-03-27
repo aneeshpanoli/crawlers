@@ -1,8 +1,8 @@
 from bs4 import BeautifulSoup as BS
 import requests as rq
 import json
+from pathlib import Path
 import lxml
-
 import country
 import tools
 
@@ -36,5 +36,9 @@ def parse_event(e):
 
 l = [parse_event(event) for event in events]
 target = json.dumps(l)
-with open('output/group_list.json', 'w') as f:
+
+data_folder = Path(Path(__file__).resolve().parent, "output")
+file_to_open = data_folder / "group_list.json"
+
+with open(file_to_open, 'w') as f:
     f.write(target)
