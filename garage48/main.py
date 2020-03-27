@@ -16,10 +16,12 @@ def parse_event(e):
     infolist = e.findAll('div', 'gr-flex')
     title = str.strip(e.find('h4', {"class": "gr-event__title"}).text)
     img = e.find('div', {"class": "gr-event__image"})
-    c = infolist[1].find('strong').text
+
+    #country name could not be there
+    c = infolist[1].find('strong').text if len(infolist)>0 else ''
     country_id = country.match_country_id(c)
 
-    #comments
+    #may not have image
     img_url = tools.parse_bg_image(img['data-bg']) if img else ''
     # det_url = img.find('a')['href']
 
@@ -28,8 +30,8 @@ def parse_event(e):
         "logo_url": img_url,
         "country_id": country_id
     }
-
-    return data
+    return []
+    # return data
 
 
 l = [parse_event(event) for event in events]
