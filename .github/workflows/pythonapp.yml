@@ -25,4 +25,6 @@ jobs:
 
     - name: Scan Garage48
       run: |
-        cd garage48 && python main.py
+        cd garage48 && python main_class.py
+    - name: Let's see the result
+      with: garage48/output/events.csv
