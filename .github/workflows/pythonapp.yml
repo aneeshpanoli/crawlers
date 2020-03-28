@@ -27,4 +27,7 @@ jobs:
       run: |
         cd garage48 && python main_class.py
     - name: Let's see the result
-      with: garage48/output/events.csv
+      uses: actions/upload-artifact@v1
+      with: 
+        name: Events list from Garage48 
+        path: garage48/output/events.csv
