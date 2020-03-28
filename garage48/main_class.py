@@ -54,7 +54,7 @@ class EventScrapper:
 
 
 if __name__=='__main__':
-    csv_name = 'event.csv'
+    csv_name = 'garage48_events.csv'
     scrapper = EventScrapper()
     scrapper.scrape_garage48()
     scrapper.save_csv(csv_name)
