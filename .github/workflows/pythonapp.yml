@@ -30,4 +30,4 @@ jobs:
       uses: actions/upload-artifact@v1
       with: 
         name: Events list from Garage48 
-        path: garage48/output/events.csv
+        path: garage48/output/garage48_events.csv
