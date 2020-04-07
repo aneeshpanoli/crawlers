@@ -25,7 +25,8 @@ class EventScrapper:
         for event in events:
             infolist = event.findAll('div', 'gr-flex')
             name = str.strip(event.find('h4', {"class": "gr-event__title"}).text)
-            event_url = event.find('a').get('href')
+            event_url = event.find('a')
+            event_url = event_url.get('href') if event_url else ''
             logo_url = event.find('div', {"class": "gr-event__image"})
             logo_url = logo_url.get('data-bg') if logo_url else ''
             country_name = infolist[1].find('strong').text if infolist else ''

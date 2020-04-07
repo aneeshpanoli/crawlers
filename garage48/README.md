@@ -9,7 +9,7 @@
 
 Install dependencies:
 ```bash
-pip install -r rrequirements.txt
+pip install -r requirements.txt
 ```
 
 Run main command:
