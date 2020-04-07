@@ -28,4 +28,11 @@ Then run (please be aware that it will take some minutes to have all 1200+ pages
 $ make run
 ```
 
+Or specify HACKATHON the name of the hackathon as written in the url on devpost (e.g. 'wirvsvirushackathon' in [wirvsvirushackathon.devpost.com](wirvsvirushackathon.devpost.com))
+
+```
+$ make run HACKATHON=wirvsvirushackathon
+```
+
+
 See results of submissions as [JSON lines](http://jsonlines.org/) file generated with run in `item.jl`. 

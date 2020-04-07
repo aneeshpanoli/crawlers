@@ -12,11 +12,13 @@ class ProjectsSpider(scrapy.Spider):
 
     allowed_domains = ['devpost.com']
 
-    start_url = 'https://wirvsvirushackathon.devpost.com/submissions'
-
     # Grep Youtube Video ID from embedded video player reference,
     # used inside gallery of submission detail page
     yt_embed_regex = r"embed\/(.*)\?"
+
+    def __init__(self, hackathon=None, *args, **kwargs):
+        super(ProjectsSpider, self).__init__(*args, **kwargs)
+        self.start_url = 'https://%s.devpost.com/submissions' % hackathon
 
     def start_requests(self):
         yield scrapy.Request(url=self.start_url, callback=self.parse_start_page)
@@ -24,7 +26,12 @@ class ProjectsSpider(scrapy.Spider):
     def parse_start_page(self, response):
         # Search filter used on the right side bar to select category,
         # unfortunately category is not listed on submission detail page
-        challenge_filter = "filter[bitte wählt eure herausforderung aus:][]"
+
+        # Get all the filters names
+        challenge_filters = list(set(response.css(f'input[name*="filter["]::attr(name)').getall()))
+
+        # Select the first in the list as a category filter
+        challenge_filter = challenge_filters[0]
         challenges = response.css(f'input[name="{challenge_filter}"]::attr(value)').getall()
 
         for challenge in challenges[:3]:  # TODO: ie. limit with [:9]
