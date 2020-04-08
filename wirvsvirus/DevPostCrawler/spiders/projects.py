@@ -28,18 +28,26 @@ class ProjectsSpider(scrapy.Spider):
         # unfortunately category is not listed on submission detail page
 
         # Get all the filters names
-        challenge_filters = list(set(response.css(f'input[name*="filter["]::attr(name)').getall()))
+        submission_filters = list(set(response.css(f'input[name*="filter["]::attr(name)').getall()))
 
-        # Select the first in the list as a category filter
-        challenge_filter = challenge_filters[0]
-        challenges = response.css(f'input[name="{challenge_filter}"]::attr(value)').getall()
 
-        for challenge in challenges[:3]:  # TODO: ie. limit with [:9]
-            yield scrapy.FormRequest.from_response(response,
-                                                   formcss='form.filter-submissions',
-                                                   formdata={challenge_filter: challenge},
-                                                   callback=self.parse_gallery,
-                                                   cb_kwargs={'challenge': challenge})
+        if submission_filters:
+            #TODO for submission_filter in submission_filters:
+            challenge_filter = submission_filters[0]
+            challenges = response.css(f'input[name="{challenge_filter}"]::attr(value)').getall()
+
+            for challenge in challenges[:3]:  # TODO: ie. limit with [:9]
+                yield scrapy.FormRequest.from_response(response,
+                                                       formcss='form.filter-submissions',
+                                                       formdata={challenge_filter: challenge},
+                                                       callback=self.parse_gallery,
+                                                       cb_kwargs={'challenge': challenge})
+        # If no filter available
+        else:
+            yield scrapy.Request(url=self.start_url,
+                                 callback=self.parse_gallery,
+                                 cb_kwargs={'challenge': ''},
+                                 dont_filter=True)
 
     def parse_gallery(self, response, challenge):
         item_urls = response.css('div.gallery-item a.link-to-software::attr(href)').getall()
