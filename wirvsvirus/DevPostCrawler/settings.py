@@ -66,7 +66,15 @@ DOWNLOAD_DELAY = 0.3
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
     'DevPostCrawler.pipelines.DevPostCrawlerPipeline': 300,
+    'scrapyelasticsearch.scrapyelasticsearch.ElasticSearchPipeline': 500
 }
+
+# See https://github.com/jayzeng/scrapy-elasticsearch
+ELASTICSEARCH_SERVERS = ['http://elastic:changeme@localhost:9200']
+ELASTICSEARCH_INDEX = 'scrapy'
+ELASTICSEARCH_INDEX_DATE_FORMAT = '%Y-%m'
+ELASTICSEARCH_TYPE = 'items'
+ELASTICSEARCH_UNIQ_KEY = 'url'  # Custom unique key
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html

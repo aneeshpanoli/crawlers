@@ -40,5 +40,4 @@ Or specify HACKATHON the name of the hackathon as written in the url on devpost 
 $ make run HACKATHON=wirvsvirushackathon
 ```
 
-
 See results of submissions as [JSON lines](http://jsonlines.org/) file generated with run in `item.jl`. 
