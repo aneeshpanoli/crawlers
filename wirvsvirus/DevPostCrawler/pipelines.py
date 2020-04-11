@@ -20,21 +20,25 @@ class DevPostCrawlerPipeline(object):
         self.file.close()
 
     def process_item(self, item, spider):
-        dict_item = dict(item)
+
+        story_text = item['storyTextOriginal'][0]
+        subtitle = item['subtitleOriginal'][0]
+
+        language = self.lp.get_language(story_text)
+        item['language'] = language
+
+        # Translate to english if necessary
+        if language != 'english':
+            item['storyText'] = self.lp.ggl_translate(story_text)
+            item['subtitle'] = self.lp.ggl_translate(subtitle)
+        else:
+            item['storyText'] = story_text
+            item['subtitle'] = subtitle
 
         # Extract most frequent words
-        story_text = item['storyText'][0]
-        dict_item['popularWords'] = self.lp.get_keyword(story_text)
+        item['keywords'] = self.lp.get_keywords(item['storyText'])
 
-        # Detect the subtitle language and translate it to english
-        subtitle = item['subtitle'][0]
-        translation = self.lp.get_language(subtitle)
-        dict_item['language'] = translation[1]
-        if dict_item['language'] != 'english':
-            dict_item['enSubtitle'] = translation[0]
-        else:
-            dict_item['enSubtitle'] = ''
-
-        line = json.dumps(dict_item) + "\n"
+        # Export to JSON line format
+        line = json.dumps(dict(item)) + "\n"
         self.file.write(line)
         return item

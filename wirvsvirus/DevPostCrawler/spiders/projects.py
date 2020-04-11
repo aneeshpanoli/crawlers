@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 import logging
+import datetime
 import re
 
 import scrapy
 
 from DevPostCrawler.items import DevPostCrawlerItem
+from DevPostCrawler.utils.normalizer import normalize_title, normalize_challenge
 
 
 class ProjectsSpider(scrapy.Spider):
@@ -30,9 +32,8 @@ class ProjectsSpider(scrapy.Spider):
         # Get all the filters names
         submission_filters = list(set(response.css(f'input[name*="filter["]::attr(name)').getall()))
 
-
         if submission_filters:
-            #TODO for submission_filter in submission_filters:
+            # TODO also use other filters?  for submission_filter in submission_filters:
             challenge_filter = submission_filters[0]
             challenges = response.css(f'input[name="{challenge_filter}"]::attr(value)').getall()
 
@@ -67,20 +68,28 @@ class ProjectsSpider(scrapy.Spider):
     def parse_software_page(self, response, challenge):
         item = DevPostCrawlerItem()
 
-        item['title'] = response.css('h1#app-title::text').get(),
-        item['subtitle'] = response.css('header p.large::text').get().strip(),
+        item['title'] = normalize_title(response.css('h1#app-title::text').get()),
+        item['subtitleOriginal'] = response.css('header p.large::text').get().strip(),
         item['url'] = response.url,
-        item['challenge'] = challenge,
+        item['category'] = normalize_challenge(challenge),
         item['image'] = response.css('meta[itemprop="image"]::attr(content)').get(),
         item['video'] = self.get_youtube_link(response.css('iframe.video-embed::attr(src)').get()),
-        item['storyText'] = ''.join(response.css('#app-details-left div:not([id]):not([class]) ::text').getall()).strip(),
-        item['storyHTML'] = response.css('#app-details-left div:not([id]):not([class])').get().strip(),
+
+        item['storyTextOriginal'] = ''.join(response.css('#app-details-left div:not([id]):not([class]) ::text').getall()).strip(),
+
+        # item['storyHTML'] = response.css('#app-details-left div:not([id]):not([class])').get().strip(),
+        app_links = response.css('nav.app-links a::attr(href)').getall()
+        story_links = response.css('#app-details-left div:not([id]):not([class]) a::attr(href)').getall()
+        item['links'] = list(set(app_links + story_links))
+
         item['nrLikes'] = self.normalize_int(response, 'a.like-button .side-count::text'),
         item['nrComments'] = self.normalize_int(response, 'a.comment-button .side-count::text'),
+        item['nrUpdates'] = self.normalize_int(response, 'a[href*="#updates"]:not([id]) .side-count::text'),
+        item['lastUpdatedAt'] = response.css('time::attr(datetime)').get(),
         item['teamMembers'] = response.css('#app-team .user-profile-link ::text').getall(),
-        item['appLinks'] = response.css('nav.app-links a::attr(href)').getall(),
         item['builtWith'] = [s.lower() for s in response.css('#built-with span.cp-tag ::text').getall()],
-        
+        item['scrapedAt'] = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0).isoformat(),
+
         yield item
 
     def get_youtube_link(self, embed_link):
