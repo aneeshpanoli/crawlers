@@ -24,7 +24,6 @@ $ source venv/bin/activate
 And install requirements:
 
 ```
-$ python3 -m spacy download en_core_web_sm
 $ make requirements
 ```
 
