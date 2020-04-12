@@ -24,11 +24,11 @@ class DevPostCrawlerPipeline(object):
         story_text = item['storyTextOriginal'][0]
         subtitle = item['subtitleOriginal'][0]
 
-        language = self.lp.get_language(story_text)
+        (score, language) = self.lp.spc_detect_language(story_text)
         item['language'] = language
 
         # Translate to english if necessary
-        if language != 'english':
+        if language != 'english' or language != 'en' or score < 0.85:
             item['storyText'] = self.lp.ggl_translate(story_text)
             item['subtitle'] = self.lp.ggl_translate(subtitle)
         else:

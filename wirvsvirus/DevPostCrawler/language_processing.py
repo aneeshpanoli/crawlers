@@ -1,38 +1,42 @@
 # -*- coding: utf-8 -*-
 
-# Requires: python3 -m spacy download en_core_web_sm
-
+import logging
 from collections import Counter
 
-import googletrans as gt
-import spacy
-import logging
-
 # Google Translate API reference: https://cloud.google.com/translate/docs/reference/rest
+import googletrans as gt
+# Requires: python3 -m spacy download en_core_web_sm
+import spacy
+from spacy_langdetect import LanguageDetector
+
+STOP_WORDS = {'able', 'better', 'build', 'built', 'causes', 'challenge',
+              'challenges', 'changed', 'context', 'corona', 'covid',
+              'create', 'crisis', 'curious', 'current', 'dear',
+              'developed', 'different', 'end', 'forward', 'got', 'group',
+              'hackathon', 'hackathons', 'high', 'impacts', 'inspiration',
+              'journey', 'key', 'lot', 'list', 'need', 'new',
+              'opportunity', 'people', 'presentation', 'problem',
+              'problems', 'project', 'proud', 'provide', 'ran',
+              'related', 'risk', 'situations', 'solution', 'solutions',
+              'start', 'step', 'team', 'time', 'true', 'want', 'way'}
 
 
 class LanguageProcessing(object):
 
     def __init__(self):
         self.nlp = spacy.load("en_core_web_sm")
+        self.nlp.Defaults.stop_words |= STOP_WORDS
+        self.nlp.add_pipe(LanguageDetector(), name="language_detector", last=True)
         self.translator = gt.Translator()
-        self.nlp.Defaults.stop_words |= {"solution",
-                                         "solutions",
-                                         "problem",
-                                         "problems",
-                                         "team",
-                                         "group",
-                                         "corona",
-                                         "people",
-                                         "risk",
-                                         "want",
-                                         "need",
-                                         "time",
-                                         "crisis", }
 
-    def get_language(self, text):
-        logging.info("Get language for '%s'", text[0:256])
-        return gt.LANGUAGES[self.translator.detect(text[0:256]).lang]
+    def spc_detect_language(self, text):
+        doc = self.nlp(text)
+        # detecting contains 'score' (0..1) and 'language' en, de
+        return doc._.language['score'], doc._.language['language']
+
+    def ggl_detect_language(self, text):
+        logging.debug("Get language for '%s'", text[0:256])
+        return gt.LANGUAGES[self.translator.detect(text[0:256]).lang]  # english, german
 
     def ggl_translate(self, text):
         # see https://cloud.google.com/translate/quotas
@@ -51,7 +55,6 @@ class LanguageProcessing(object):
 
 
 if __name__ == '__main__':
-
     remedy_txt = """
     Bedarfserbringer (Betriebe, Haushalte, Gesundheitseinrichtungen) 
     pflegen den Bestand lagernder Schutzartikel in die Plattform ein.
@@ -81,8 +84,11 @@ if __name__ == '__main__':
     24x7 Verfügbarkeit gewährleisten zu können.
     """
     proc = LanguageProcessing()
-    print("Detected language:", proc.get_language(remedy_txt))
+    print("Detected language (google):", proc.ggl_detect_language(remedy_txt))
+    (score, lang) = proc.spc_detect_language(remedy_txt)
+    print("Detected language (spacey):", lang, " score:", score)
     translated = proc.ggl_translate(remedy_txt)
     print("Translated to:", translated)
-    print("Detected language of translation:", proc.get_language(translated))
+    print("Detected language of translation:", proc.ggl_detect_language(translated))
+    # FIXME: Verify stopwords filtering, ie. why is "need" still in result keywords?
     print("English keywords:", proc.get_keywords(translated))
