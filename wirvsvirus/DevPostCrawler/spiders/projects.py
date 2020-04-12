@@ -29,8 +29,8 @@ class ProjectsSpider(scrapy.Spider):
         # Search filter used on the right side bar to select category,
         # unfortunately category is not listed on submission detail page
 
-        # Get all the filters names
-        submission_filters = list(set(response.css(f'input[name*="filter["]::attr(name)').getall()))
+        # Get all filters names in original order
+        submission_filters = response.css('form.filter-submissions ul li:first-child input[name*="filter["]::attr(name)').getall()
 
         if submission_filters:
             # TODO also use other filters?  for submission_filter in submission_filters:
