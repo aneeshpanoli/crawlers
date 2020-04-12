@@ -26,5 +26,5 @@ class DevPostCrawlerItem(scrapy.Item):
     lastUpdatedAt = scrapy.Field()      # Date
     teamMembers = scrapy.Field()        # array
     builtWith = scrapy.Field()          # array
-    language = scrapy.Field()           # added by pipeline
+    language = scrapy.Field()           # added by pipeline, detected from storyText
     scrapedAt = scrapy.Field()          # Date

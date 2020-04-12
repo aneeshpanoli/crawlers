@@ -10,7 +10,7 @@ challenge_starts_numbers = r"^\d+\s?-(.*)"
 
 
 def normalize_title(s):
-    normalized_a = re.findall(title_starting_numbers, s)
+    normalized_a = re.findall(title_starting_numbers, s.strip())
     normalized_b = normalized_a[0].strip().replace('_', ' ')
     if re.match(title_starting_single_char, normalized_b):
         normalized_c = re.findall(title_starting_single_char, normalized_b)
@@ -31,7 +31,8 @@ if __name__ == '__main__':
 
     print(normalize_challenge("48 - hilfsmittel"))
 
-    titles = ["034_nachbarschaftshilfe_karmakurier",
+    titles = ["01_096_Lebensmittel-Matching_ErsatzKompass",
+              "034_nachbarschaftshilfe_karmakurier",
               "#1_019_d_e-learning Digitale Schule",
               "06_Medizingeräteherstellung_Medprint",
               "Lake COVID",

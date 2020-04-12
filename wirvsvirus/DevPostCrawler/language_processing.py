@@ -6,6 +6,9 @@ from collections import Counter
 
 import googletrans as gt
 import spacy
+import logging
+
+# Google Translate API reference: https://cloud.google.com/translate/docs/reference/rest
 
 
 class LanguageProcessing(object):
@@ -28,10 +31,12 @@ class LanguageProcessing(object):
                                          "crisis", }
 
     def get_language(self, text):
+        logging.info("Get language for '%s'", text[0:256])
         return gt.LANGUAGES[self.translator.detect(text[0:256]).lang]
 
     def ggl_translate(self, text):
-        translation = self.translator.translate(text)
+        # see https://cloud.google.com/translate/quotas
+        translation = self.translator.translate(text[0:5000])
         return translation.text
 
     def get_keywords(self, text, nr_keywords=20):
