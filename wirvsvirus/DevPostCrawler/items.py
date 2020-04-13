@@ -15,8 +15,8 @@ class DevPostCrawlerItem(scrapy.Item):
     hackathons = scrapy.Field()         # array
     url = scrapy.Field()
     category = scrapy.Field()
-    image = scrapy.Field()
-    video = scrapy.Field()
+    image = scrapy.Field()              # URL
+    video = scrapy.Field()              # URL
     storyText = scrapy.Field()          # in english
     storyTextOriginal = scrapy.Field()  # not translated
     keywords = scrapy.Field()           # array (extracted by spacey) in english
@@ -24,6 +24,7 @@ class DevPostCrawlerItem(scrapy.Item):
     nrLikes = scrapy.Field()            # int
     nrComments = scrapy.Field()         # int
     nrUpdates = scrapy.Field()          # int
+    nrHighlights = scrapy.Field()       # int
     lastUpdatedAt = scrapy.Field()      # Date
     teamMembers = scrapy.Field()        # array
     builtWith = scrapy.Field()          # array

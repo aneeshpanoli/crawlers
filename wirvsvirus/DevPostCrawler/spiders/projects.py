@@ -70,7 +70,7 @@ class ProjectsSpider(scrapy.Spider):
 
         item['title'] = normalize_title(response.css('h1#app-title::text').get()),
         item['subtitleOriginal'] = response.css('header p.large::text').get().strip(),
-        item['hackathons'] = map(str.strip, response.css('.software-list-content a::text').getall()),
+        item['hackathons'] = list(map(str.strip, response.css('.software-list-content a::text').getall())),
         item['url'] = response.url,
         item['category'] = normalize_challenge(challenge),
         item['image'] = response.css('meta[itemprop="image"]::attr(content)').get(),
@@ -85,6 +85,7 @@ class ProjectsSpider(scrapy.Spider):
 
         item['nrLikes'] = self.normalize_int(response, 'a.like-button .side-count::text'),
         item['nrComments'] = self.normalize_int(response, 'a.comment-button .side-count::text'),
+        item['nrHighlights'] = len(response.css('.winner').getall()),
         item['nrUpdates'] = self.normalize_int(response, 'a[href*="#updates"]:not([id]) .side-count::text'),
         item['lastUpdatedAt'] = response.css('time::attr(datetime)').get(),
         item['teamMembers'] = response.css('#app-team .user-profile-link ::text').getall(),

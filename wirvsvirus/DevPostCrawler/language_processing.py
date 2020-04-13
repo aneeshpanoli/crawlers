@@ -2,6 +2,7 @@
 
 import logging
 from collections import Counter
+import re
 
 # Google Translate API reference: https://cloud.google.com/translate/docs/reference/rest
 import googletrans as gt
@@ -25,13 +26,19 @@ STOP_WORDS = {'able', 'better', 'build', 'built', 'causes', 'challenge',
 class LanguageProcessing(object):
 
     def __init__(self):
-        self.nlp = spacy.load("en_core_web_sm")
+        self.nlp = spacy.load("en_core_web_sm")  # de_core_news_sm
         self.nlp.Defaults.stop_words |= STOP_WORDS
         self.nlp.add_pipe(LanguageDetector(), name="language_detector", last=True)
         self.translator = gt.Translator()
         # alternative
         self.ytr = Translater()
-        self.ytr.set_key("")
+        self.ytr.set_key("trnsl.1.1.20200413T090233Z.b59b948caa43c6bf.6230a80152e2a66c1edb2115ef0b8c15249bbf6e")
+
+    def smart_truncate(self, content, length=1000, suffix='...'):
+        if len(content) <= length:
+            return content
+        else:
+            return ' '.join(content[:length+1].split(' ')[0:-1]) + suffix
 
     def spc_detect_language(self, text):
         doc = self.nlp(text)
@@ -39,19 +46,24 @@ class LanguageProcessing(object):
         return doc._.language['score'], doc._.language['language']
 
     def ggl_detect_language(self, text):
-        logging.debug("Get language for '%s'", text[0:256])
-        return gt.LANGUAGES[self.translator.detect(text[0:256]).lang]  # english, german
+        shortened = self.smart_truncate(text, 100)
+        logging.debug("Get language for '%s'", shortened)
+        return gt.LANGUAGES[self.translator.detect(shortened).lang]  # english, german
 
     def ggl_translate(self, text):
         # see https://cloud.google.com/translate/quotas
-        # translation = self.translator.translate(text[0:5000])
+        shortened = self.smart_truncate(text, 1000)
+        print(shortened)
+        translation = self.translator.translate(shortened)
+        return translation.text
+
+    def ydx_translate(self, text):
         self.ytr.set_from_lang('de')
         self.ytr.set_to_lang('en')
-        self.ytr.set_text(text[0:5000])
-
+        self.ytr.set_text(self.smart_truncate(text, 1000))
         return self.ytr.translate()
 
-    def get_keywords(self, text, nr_keywords=20):
+    def get_keywords(self, text, nr_keywords=12):
         doc = self.nlp(text)
         key_words = []
         for chunk in doc:
@@ -63,7 +75,16 @@ class LanguageProcessing(object):
 
 
 if __name__ == '__main__':
-    remedy_txt = """
+    txt_frontliner = """Inspiration
+                What it does
+                How I built it
+                Challenges I ran into
+                Accomplishments that I'm proud of
+                What I learned
+                What's next for Frontlinehelper.org
+                After watching news reports about so many restaurants facing hardship and seeing testimonials of COVID-19 frontline workers such as healthcare workers, truckers, grocery workers, etc. I realized that they could be brought together to help one another. My husband and son both work in our family trucking company, so I know first hand how hard everyone is working and the toll it takes. By connecting donors who donate money and/or time to pick up and deliver with restaurants willing to do curbside, to-go or catering, we can use the money donated to pay the restaurants (which keeps them in business), the donors to pick up the food and deliver it, and the frontline workers get fed. Then, I kept hearing about how some daycare facilities were closing. Now you've got all these workers who are already background checked and licensed, out of work. But the front line folks still need childcare or elder care. Why not partner them together? So that's how Frontline Helper was born. I secured the urls of frontlinehelper.org and frontlinehelper.com and we are in the process of creating the wireframes. We're building it so that it can be copied in all other communities...not just my local community,"""
+
+    txt = """
     Bedarfserbringer (Betriebe, Haushalte, Gesundheitseinrichtungen) 
     pflegen den Bestand lagernder Schutzartikel in die Plattform ein.
     
@@ -92,10 +113,11 @@ if __name__ == '__main__':
     24x7 Verfügbarkeit gewährleisten zu können.
     """
     proc = LanguageProcessing()
-    print("Detected language (google):", proc.ggl_detect_language(remedy_txt))
-    (score, lang) = proc.spc_detect_language(remedy_txt)
+    print("Detected language (google):", proc.ggl_detect_language(txt))
+    (score, lang) = proc.spc_detect_language(txt)
     print("Detected language (spacey):", lang, " score:", score)
-    translated = proc.ggl_translate(remedy_txt)
+    # abbreviated = ' '.join(re.split(r'(?<=[.:;])\s', txt)[:4])
+    translated = proc.ggl_translate(txt)
     print("Translated to:", translated)
     print("Detected language of translation:", proc.ggl_detect_language(translated))
     # FIXME: Verify stopwords filtering, ie. why is "need" still in result keywords?
