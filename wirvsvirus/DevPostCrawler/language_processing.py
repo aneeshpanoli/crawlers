@@ -8,6 +8,7 @@ import googletrans as gt
 # Requires: python3 -m spacy download en_core_web_sm
 import spacy
 from spacy_langdetect import LanguageDetector
+from yandex.Translater import Translater
 
 STOP_WORDS = {'able', 'better', 'build', 'built', 'causes', 'challenge',
               'challenges', 'changed', 'context', 'corona', 'covid',
@@ -28,6 +29,9 @@ class LanguageProcessing(object):
         self.nlp.Defaults.stop_words |= STOP_WORDS
         self.nlp.add_pipe(LanguageDetector(), name="language_detector", last=True)
         self.translator = gt.Translator()
+        # alternative
+        self.ytr = Translater()
+        self.ytr.set_key("")
 
     def spc_detect_language(self, text):
         doc = self.nlp(text)
@@ -40,8 +44,12 @@ class LanguageProcessing(object):
 
     def ggl_translate(self, text):
         # see https://cloud.google.com/translate/quotas
-        translation = self.translator.translate(text[0:5000])
-        return translation.text
+        # translation = self.translator.translate(text[0:5000])
+        self.ytr.set_from_lang('de')
+        self.ytr.set_to_lang('en')
+        self.ytr.set_text(text[0:5000])
+
+        return self.ytr.translate()
 
     def get_keywords(self, text, nr_keywords=20):
         doc = self.nlp(text)

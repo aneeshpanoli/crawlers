@@ -70,6 +70,7 @@ class ProjectsSpider(scrapy.Spider):
 
         item['title'] = normalize_title(response.css('h1#app-title::text').get()),
         item['subtitleOriginal'] = response.css('header p.large::text').get().strip(),
+        item['hackathons'] = map(str.strip, response.css('.software-list-content a::text').getall()),
         item['url'] = response.url,
         item['category'] = normalize_challenge(challenge),
         item['image'] = response.css('meta[itemprop="image"]::attr(content)').get(),

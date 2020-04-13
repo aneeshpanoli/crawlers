@@ -12,6 +12,7 @@ class DevPostCrawlerItem(scrapy.Item):
     title = scrapy.Field()
     subtitle = scrapy.Field()           # in english
     subtitleOriginal = scrapy.Field()   # not translated
+    hackathons = scrapy.Field()         # array
     url = scrapy.Field()
     category = scrapy.Field()
     image = scrapy.Field()
