@@ -1,0 +1,88 @@
+{
+  "title": [
+    "Immune and Ready To Help"
+  ],
+  "subtitleOriginal": [
+    "There's a strong need for Coronoavirus-immune healthcare workers, essential employees and volunteers during the global crisis; our website connects recovered patients with those opportunities."
+  ],
+  "hackathons": [
+    [
+      "Hack Quarantine",
+      "COVID-19 Global Hackathon 1.0",
+      "Tech Takes On COVID Hackathon",
+      "COVID HealthHack",
+      "HackCOVID 4 OUR HEALTHCARE PROVIDERS"
+    ]
+  ],
+  "url": [
+    "https://devpost.com/software/immune-and-ready-to-help"
+  ],
+  "category": [
+    "businesses"
+  ],
+  "image": [
+    "https://challengepost-s3-challengepost.netdna-ssl.com/photos/production/software_photos/000/998/227/datas/medium.jpg"
+  ],
+  "video": [
+    "https://www.youtube.com/watch?v=yYLmFUhbVL0"
+  ],
+  "storyTextOriginal": [
+    "Inspiration\n\nWith immunity, we will restore our community.\n\nWhile the world continues to combat the Coronavirus, we all face the terrible reality that\nuntil we discover a vaccine or develop herd immunity, social interaction presents a risk\nof infection.\n\nMedical facilities, essential businesses, and volunteer organizations are desperate for\nhealthy staff and volunteers. They need an easy way to share opportunities with local\nresources who are likely immune.\n\nWhat if they had a way to easily post work and volunteer opportunities and connect with\nlocal resources who developed COVID-19 antibodies while recovering from the disease?\n\nImagine three recently recovered patients: a young nurse, a college student, and a\nretired teacher. Having experienced the frightening reality of COVID-19 firsthand, they\nwant to help protect their loved ones and their community. They may be seeking\nemployment, or they may just want to give back.\n\nNow imagine they had a service that found their location and showed them opportunities in\ntheir area.\n\nThis idea inspired our team to create ImmuneAndReadyToHelp.com, a solution that\nconnects people who are immune to COVID-19 to medical organizations, employers,\nand volunteer opportunities, so that they can help their communities—and our\nnation—recover.\n\nWhat It Does\n\nImmuneAndReadyToHelp.com is a tool that uses geolocation to connect recovered COVID-19 individuals with nearby organizations who need them. When users visit the home page, the tool will show nearby opportunities, which can be further filtered by three categories: Medical, Employment, and Volunteer.\n\nFor Organizations\n\nOrganizations can post opportunities with contact information, physical addresses, and an\nexpiration date. Organizations will be responsible for verifying the immunity of\napplicants and abiding by HIPPA requirements.\n\nFor Individuals\n\nIndividuals who recovered from COVID-19 can contact organizations through the post. They will be required to\ndisclose their immunity status according to processes defined by the posting\norganization and HIPPA requirements.\n\nHow We Built It\n\nWe built the site on Azure in C#, using MongoDB Atlas to store posts, React and Razor pages for the front end, Google Maps for geolocation and display, and MailGun to reliably send emails.\n\nChallenges We Ran Into\n\nThe short timeframe for the hackathon posed unique challenges balancing work, quarantine taking care of children and fitting in hackathon development in when possible. Nevertheless, I'm happy with the result!"
+  ],
+  "links": [
+    "https://www.ImmuneAndReadyToHelp.com"
+  ],
+  "nrLikes": [
+    "8"
+  ],
+  "nrComments": [
+    "5"
+  ],
+  "nrHighlights": [
+    0
+  ],
+  "nrUpdates": [
+    0
+  ],
+  "lastUpdatedAt": [
+    "2020-04-13T23:00:00-04:00"
+  ],
+  "teamMembers": [
+    [
+      "Co... McG...",
+      "St... He...",
+      "Ph... Fa..."
+    ]
+  ],
+  "builtWith": [
+    [
+      "atlas",
+      "azure",
+      "c#",
+      "google-maps",
+      "mailgun",
+      "mongodb",
+      "react"
+    ]
+  ],
+  "scrapedAt": [
+    "2020-04-13T18:53:21+00:00"
+  ],
+  "language": "en",
+  "storyText": "Inspiration\n\nWith immunity, we will restore our community.\n\nWhile the world continues to combat the Coronavirus, we all face the terrible reality that\nuntil we discover a vaccine or develop herd immunity, social interaction presents a risk\nof infection.\n\nMedical facilities, essential businesses, and volunteer organizations are desperate for\nhealthy staff and volunteers. They need an easy way to share opportunities with local\nresources who are likely immune.\n\nWhat if they had a way to easily post work and volunteer opportunities and connect with\nlocal resources who developed COVID-19 antibodies while recovering from the disease?\n\nImagine three recently recovered patients: a young nurse, a college student, and a\nretired teacher. Having experienced the frightening reality of COVID-19 firsthand, they\nwant to help protect their loved ones and their community. They may be seeking\nemployment, or they may just want to give back.\n\nNow imagine they had a service that found their location and showed them opportunities in\ntheir area.\n\nThis idea inspired our team to create ImmuneAndReadyToHelp.com, a solution that\nconnects people who are immune to COVID-19 to medical organizations, employers,\nand volunteer opportunities, so that they can help their communities—and our\nnation—recover.\n\nWhat It Does\n\nImmuneAndReadyToHelp.com is a tool that uses geolocation to connect recovered COVID-19 individuals with nearby organizations who need them. When users visit the home page, the tool will show nearby opportunities, which can be further filtered by three categories: Medical, Employment, and Volunteer.\n\nFor Organizations\n\nOrganizations can post opportunities with contact information, physical addresses, and an\nexpiration date. Organizations will be responsible for verifying the immunity of\napplicants and abiding by HIPPA requirements.\n\nFor Individuals\n\nIndividuals who recovered from COVID-19 can contact organizations through the post. They will be required to\ndisclose their immunity status according to processes defined by the posting\norganization and HIPPA requirements.\n\nHow We Built It\n\nWe built the site on Azure in C#, using MongoDB Atlas to store posts, React and Razor pages for the front end, Google Maps for geolocation and display, and MailGun to reliably send emails.\n\nChallenges We Ran Into\n\nThe short timeframe for the hackathon posed unique challenges balancing work, quarantine taking care of children and fitting in hackathon development in when possible. Nevertheless, I'm happy with the result!",
+  "subtitle": "There's a strong need for Coronoavirus-immune healthcare workers, essential employees and volunteers during the global crisis; our website connects recovered patients with those opportunities.",
+  "keywords": [
+    "Organizations",
+    "Opportunities",
+    "Immunity",
+    "Volunteer",
+    "Medical",
+    "Post",
+    "Recovered",
+    "Individuals",
+    "Community",
+    "Reality",
+    "Need",
+    "Local"
+  ]
+}
