@@ -16,7 +16,8 @@ class ProjectsSpider(scrapy.Spider):
 
     # Grep Youtube Video ID from embedded video player reference,
     # used inside gallery of submission detail page
-    yt_embed_regex = r"embed\/(.*)\?"
+    youtube_embed_regex = r"embed\/(.*)\?"
+    vimeo_embed_regex = r"player.vimeo.com\/video\/(.*)\?"
 
     def __init__(self, hackathon=None, *args, **kwargs):
         super(ProjectsSpider, self).__init__(*args, **kwargs)
@@ -74,7 +75,7 @@ class ProjectsSpider(scrapy.Spider):
         item['url'] = response.url,
         item['category'] = normalize_challenge(challenge),
         item['image'] = response.css('meta[itemprop="image"]::attr(content)').get(),
-        item['video'] = self.get_youtube_link(response.css('iframe.video-embed::attr(src)').get()),
+        item['video'] = self.normalize_video_link(response.css('iframe.video-embed::attr(src)').get()),
 
         item['storyTextOriginal'] = ''.join(response.css('#app-details-left div:not([id]):not([class]) ::text').getall()).strip(),
 
@@ -94,12 +95,19 @@ class ProjectsSpider(scrapy.Spider):
 
         yield item
 
-    def get_youtube_link(self, embed_link):
-        # https://www.youtube.com/embed/sLx3Yi5vll4?enablejsapi=1&hl=en_US&rel=0&start=3&version=3&wmode=transparent
+    def normalize_video_link(self, embed_link):
         if embed_link is None:
             return ''
-        links = re.findall(self.yt_embed_regex, embed_link)
-        return '' if len(links) == 0 else f'https://www.youtube.com/watch?v={links[0]}'
+        if 'youtube.' in embed_link:
+            # https://www.youtube.com/embed/sLx3Yi5vll4?enablejsapi=1&hl=en_US&rel=0&start=3&version=3&wmode=transparent
+            links = re.findall(self.youtube_embed_regex, embed_link)
+            return '' if len(links) == 0 else f'https://www.youtube.com/watch?v={links[0]}'
+        elif 'vimeo.' in embed_link:
+            # https://player.vimeo.com/video/404234005?byline=0&portrait=0&title=0#t=
+            links = re.findall(self.vimeo_embed_regex, embed_link)
+            return '' if len(links) == 0 else f'https://vimeo.com/{links[0]}'
+        else:
+            return embed_link
 
     @staticmethod
     def normalize_int(response, selector):
