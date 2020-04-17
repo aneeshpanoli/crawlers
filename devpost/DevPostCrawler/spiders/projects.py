@@ -60,7 +60,7 @@ class ProjectsSpider(scrapy.Spider):
         # Look for more items on next page
         next_page = response.css('li.next a::attr(href)').get()
         if next_page is not None:
-            self.log(f"***** Visit next page for: {challenge}: {next_page}", level=logging.DEBUG)
+            self.log(f"*** Visit next page for: {challenge}: {next_page}", level=logging.DEBUG)
             next_page = response.urljoin(next_page)
             yield scrapy.Request(next_page,
                                  callback=self.parse_gallery,
@@ -71,13 +71,14 @@ class ProjectsSpider(scrapy.Spider):
 
         item['title'] = normalize_title(response.css('h1#app-title::text').get()),
         item['subtitleOriginal'] = response.css('header p.large::text').get().strip(),
-        item['hackathons'] = list(map(str.strip, response.css('.software-list-content a::text').getall())),
+        item['hackathons'] = [s.strip() for s in response.css('.software-list-content a::text').getall()],
         item['url'] = response.url,
         item['category'] = normalize_challenge(challenge),
         item['image'] = response.css('meta[itemprop="image"]::attr(content)').get(),
         item['video'] = self.normalize_video_link(response.css('iframe.video-embed::attr(src)').get()),
 
-        item['storyTextOriginal'] = ''.join(response.css('#app-details-left div:not([id]):not([class]) ::text').getall()).strip(),
+        raw_txt = ''.join(response.css('#app-details-left div:not([id]):not([class]) ::text').getall()).strip()
+        item['storyTextOriginal'] = self.strip_all_whitespaces(raw_txt),
 
         # item['storyHTML'] = response.css('#app-details-left div:not([id]):not([class])').get().strip(),
         app_links = response.css('nav.app-links a::attr(href)').getall()
@@ -90,7 +91,7 @@ class ProjectsSpider(scrapy.Spider):
         item['nrUpdates'] = self.normalize_int(response, 'a[href*="#updates"]:not([id]) .side-count::text'),
         item['lastUpdatedAt'] = response.css('time::attr(datetime)').get(),
         item['teamMembers'] = response.css('#app-team .user-profile-link ::text').getall(),
-        item['builtWith'] = [s.lower() for s in response.css('#built-with span.cp-tag ::text').getall()],
+        item['builtWith'] = [s.strip().lower() for s in response.css('#built-with span.cp-tag ::text').getall()],
         item['scrapedAt'] = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0).isoformat(),
 
         yield item
@@ -108,6 +109,10 @@ class ProjectsSpider(scrapy.Spider):
             return '' if len(links) == 0 else f'https://vimeo.com/{links[0]}'
         else:
             return embed_link
+
+    @staticmethod
+    def strip_all_whitespaces(txt):
+        return ' '.join(txt.split())
 
     @staticmethod
     def normalize_int(response, selector):

@@ -2,14 +2,12 @@
 
 import logging
 from collections import Counter
-import re
 
-# Google Translate API reference: https://cloud.google.com/translate/docs/reference/rest
-import googletrans as gt
 # Requires: python3 -m spacy download en_core_web_sm
 import spacy
+# Google Translate API reference: https://googleapis.dev/python/translation/latest/index.html
+from google.cloud import translate_v2
 from spacy_langdetect import LanguageDetector
-from yandex.Translater import Translater
 
 STOP_WORDS = {'able', 'better', 'build', 'built', 'causes', 'challenge',
               'challenges', 'changed', 'context', 'corona', 'covid',
@@ -29,39 +27,33 @@ class LanguageProcessing(object):
         self.nlp = spacy.load("en_core_web_sm")  # de_core_news_sm
         self.nlp.Defaults.stop_words |= STOP_WORDS
         self.nlp.add_pipe(LanguageDetector(), name="language_detector", last=True)
-        self.translator = gt.Translator()
-        # alternative
-        self.ytr = Translater()
-        self.ytr.set_key("trnsl.1.1.20200413T090233Z.b59b948caa43c6bf.6230a80152e2a66c1edb2115ef0b8c15249bbf6e")
+        self.translator = translate_v2.Client(target_language='en')
 
-    def smart_truncate(self, content, length=1000, suffix='...'):
+    @staticmethod
+    def smart_truncate(content, length=2000, suffix='...'):
         if len(content) <= length:
             return content
         else:
-            return ' '.join(content[:length+1].split(' ')[0:-1]) + suffix
+            return ' '.join(content[:length + 1].split(' ')[0:-1]) + suffix
 
     def spc_detect_language(self, text):
-        doc = self.nlp(text)
+        shortened = self.smart_truncate(text)
+        doc = self.nlp(shortened)
         # detecting contains 'score' (0..1) and 'language' en, de
         return doc._.language['score'], doc._.language['language']
 
     def ggl_detect_language(self, text):
         shortened = self.smart_truncate(text, 100)
         logging.debug("Get language for '%s'", shortened)
-        return gt.LANGUAGES[self.translator.detect(shortened).lang]  # english, german
+        return self.translator.detect_language(shortened)  # en, de
 
-    def ggl_translate(self, text):
+    def ggl_translate(self, text, src_lang, length=2000):
         # see https://cloud.google.com/translate/quotas
-        shortened = self.smart_truncate(text, 1000)
-        print(shortened)
-        translation = self.translator.translate(shortened)
-        return translation.text
-
-    def ydx_translate(self, text):
-        self.ytr.set_from_lang('de')
-        self.ytr.set_to_lang('en')
-        self.ytr.set_text(self.smart_truncate(text, 1000))
-        return self.ytr.translate()
+        shortened = self.smart_truncate(text, length)
+        logging.debug("Going to translate %d characters from %s", len(shortened), src_lang)
+        translation = self.translator.translate(shortened, source_language=src_lang)
+        # noinspection PyTypeChecker
+        return translation['translatedText']
 
     def get_keywords(self, text, nr_keywords=12):
         doc = self.nlp(text)
@@ -112,13 +104,16 @@ if __name__ == '__main__':
     Überschüssiger medizinischer Bedarf kann ebenso in den Zentrallagern vorgehalten werden um eine 
     24x7 Verfügbarkeit gewährleisten zu können.
     """
+
     proc = LanguageProcessing()
     print("Detected language (google):", proc.ggl_detect_language(txt))
     (score, lang) = proc.spc_detect_language(txt)
     print("Detected language (spacey):", lang, " score:", score)
-    # abbreviated = ' '.join(re.split(r'(?<=[.:;])\s', txt)[:4])
-    translated = proc.ggl_translate(txt)
+
+    cleaned = ' '.join(txt.split())
+    translated = proc.ggl_translate(cleaned, lang)
     print("Translated to:", translated)
+
     print("Detected language of translation:", proc.ggl_detect_language(translated))
     # FIXME: Verify stopwords filtering, ie. why is "need" still in result keywords?
     print("English keywords:", proc.get_keywords(translated))

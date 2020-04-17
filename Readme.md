@@ -2,8 +2,9 @@
 
 # About
 
-Crawlers for portals add groups and projects into the (Airtable) database. Feel free to upadate and improve:
+Crawlers for portals to add groups and projects into databases (Airtable / Elasticsearch). 
+Feel free to update and improve:
 
 - [x] [Garage48](garage48)
-- [x] [WirVsVirus](wirvsvirus)
+- [x] [DevPost](devpost) (ie. WirVsVirus hackathon)
 - [ ] Others

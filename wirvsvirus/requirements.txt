@@ -1,7 +1,0 @@
-Scrapy==2.0.1
-spacy_langdetect==0.1.2
-spacy==2.2.4
-pandas==1.0.3
-yandex-translater==6.0
-googletrans==2.4.0
-google_api_python_client==1.8.0
