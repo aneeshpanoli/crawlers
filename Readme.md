@@ -18,6 +18,7 @@ Feel free to update and improve:
 - [ ] [Open source solutions](https://joinup.ec.europa.eu/collection/digital-response-covid-19/open-source-solutions)
 - [ ] [Social economy in the fight against Corona](https://webgate.ec.europa.eu/fpfis/wikis/display/SEC/Social+economy+in+the+fight+against+Corona)
 - [ ] [Startup blink](https://coronavirus.startupblink.com/)
+- [ ] [Le carrefour des innovations sociales](https://www.carrefourdesinnovationssociales.fr/domaines/territoires-engages/)
 - [ ] [Arduino Covid](https://create.arduino.cc/projecthub/search?q=COVID)
 - [ ] [Arduino Corona](https://create.arduino.cc/projecthub/search?q=Corona)
 - [ ] [InnoCentive](https://www.innocentive.com/ar/challenge/browse/filterForm)
