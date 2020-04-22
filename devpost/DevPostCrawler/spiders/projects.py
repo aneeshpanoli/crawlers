@@ -38,7 +38,7 @@ class ProjectsSpider(scrapy.Spider):
             challenge_filter = submission_filters[0]
             challenges = response.css(f'input[name="{challenge_filter}"]::attr(value)').getall()
 
-            for challenge in challenges[:3]:  # TODO: ie. limit with [:9]
+            for challenge in challenges:  # TODO: ie. limit with [:9]
                 yield scrapy.FormRequest.from_response(response,
                                                        formcss='form.filter-submissions',
                                                        formdata={challenge_filter: challenge},
